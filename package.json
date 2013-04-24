@@ -1,0 +1,24 @@
+{
+  "name": "livef1",
+  "version": "0.0.0",
+  "description": "Live Formula1 Server",
+  "main": "livef1.js",
+  "directories": {
+    "test": "test"
+  },
+  "engines" : { "node" : ">=0.10.1" },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/OptimalBits/livef1.git"
+  },
+  "author": "Manuel Astudillo",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "dependencies": {
+    "when": "*",
+    "request": "*"
+  }
+}
