@@ -1,6 +1,8 @@
 //
 // Decrypter Object
 //
+"use strict";
+
 var INITIAL_DECRYPTION_SALT = 0x55555555;
 
 function Decrypter(key){
