@@ -106,6 +106,8 @@ var EventType = {
   QUALIFYING: 3
 };
 
+module.exports.EventType = EventType;
+
 function parseCarPacket(header, stream, eventType){
   switch(eventType){
     case EventType.RACE:
@@ -488,9 +490,10 @@ var parseStream = function(buffer, cookie, cb){
   return parsePacket(buffer, eventType).then(function(packet){
   
     if(sessionId){
+      packet = packet || {};
       packet.sessionId = sessionId;
     }
-    
+      
     cb(packet);
             
     if(packet.eventType){
@@ -505,14 +508,16 @@ var parseStream = function(buffer, cookie, cb){
           streamify(keyframe);
           return parseStream(keyframe, cookie, cb).then(function(){
             return parseStream(buffer, cookie, cb);
-          });
+          }).otherwise(function(err){
+            console.log("Error Parsing Keyframe", err);
+          })
         });
       }else{
         return parseStream(buffer, cookie, cb);
       }
     }else if(packet.startSession){
       readDecryptionKey(HOST, packet.sessionId, cookie).then(function(key){
-        console.log("DECRYPTION KEY:"+key);
+        console.log("DECRYPTION KEY:", key);
         decrypter = new Decrypter(key);
         decrypt = decrypter.decrypt.bind(decrypter);
         decryptShort = decrypter.decryptShort.bind(decrypter);
@@ -548,7 +553,7 @@ module.exports = function(user, passwd, cb){
     var liveStream = new net.Socket();
 
     liveStream.connect(PORT, HOST, function(){
-      debug && console.log('client connected');
+      console.log('client connected');
   
       // Write 0x10 every second to force server to continue sending data.
       setInterval(function(){
@@ -557,12 +562,14 @@ module.exports = function(user, passwd, cb){
     });
 
     liveStream.on('end', function() {
-      debug && console.log('client disconnected');
+      console.log('client disconnected');
     });
     
     liveStream.on('error', function(err){
-      console.log('client error:'+err);
-      // reconnect
+      console.log('client error:', err);
+      liveStream.destroy();
+      
+      // TODO: How do we handle a connection error?
     });
   
     return parseStream(liveStream, cookie, cb);
