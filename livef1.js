@@ -551,12 +551,13 @@ module.exports = function(user, passwd, cb){
     var net = require('net');
 
     var liveStream = new net.Socket();
+    var heartbeat;
 
     liveStream.connect(PORT, HOST, function(){
       console.log('client connected');
   
       // Write 0x10 every second to force server to continue sending data.
-      setInterval(function(){
+      heartbeat = setInterval(function(){
         liveStream.write(new Buffer(0x10));
       }, 1000);
     });
@@ -568,7 +569,8 @@ module.exports = function(user, passwd, cb){
     liveStream.on('error', function(err){
       console.log('client error:', err);
       liveStream.destroy();
-      
+      clearInterval(hearbeat);
+      e
       // TODO: How do we handle a connection error?
     });
   
