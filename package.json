@@ -1,6 +1,6 @@
 {
   "name": "livef1",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Live Formula1 Server",
   "main": "livef1.js",
   "directories": {
